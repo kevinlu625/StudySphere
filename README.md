@@ -4,7 +4,7 @@
 
 ---
 
-### Aggregation Module (Total Points: 10)
+### Aggregation Module
 
 #### 1. Choose Class (Point Value: 1)
 **Description**:  
@@ -52,7 +52,7 @@ Suggested answers are voted on based on their accuracy and usefulness. Top-voted
 
 ---
 
-### Quality Control Module (Total Points: 7)
+### Quality Control Module
 
 #### 1. Display Top 2-3 Answers (Point Value: 1)
 **Description**:  
@@ -87,9 +87,3 @@ Users who consistently post irrelevant or low-quality questions are banned to en
 - Implement a review system to avoid false positives.
 
 ---
-
-### Total Points: 17
-
----
-
-This point distribution is intended to reflect a reasonable workload for each component, with potential adjustments based on complexity during project development.
