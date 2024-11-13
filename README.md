@@ -2,9 +2,12 @@
 
 #### Project Components
 
+StudySphere is divided into two primary modules: Aggregation Module and Quality Control Module. Each module handles specific aspects of the platform's functionality, contributing to the overall collaborative learning experience by ensuring content quality and user engagement.
+
 ---
 
 ### Aggregation Module
+This module facilitates the core functions of question posting, answer suggestions, and voting, allowing users to interact and contribute content within a structured framework.
 
 #### 1. Choose Class (Point Value: 1)
 **Description**:  
@@ -13,6 +16,10 @@ The user selects a relevant class for which they want to post or answer question
 **High-Level Milestones**:
 - Design interface for selecting classes.
 - Integration with the class database.
+  
+#### 1. Choose Midterm/Final (Point Value: 1)
+**Description**:  
+Users specify whether their questions pertain to midterms or finals.
 
 **High-Level Milestones**:
 - UI for specifying the type of exam.
@@ -24,7 +31,8 @@ Users can post questions relevant to the selected class and exam type. The syste
 
 **High-Level Milestones**:
 - Create a user input form.
-- Establish backend question storage.
+- Set up backend storage to store and manage posted questions.
+- Create UI for viewing questions.
 
 #### 4. Suggest Answer (Point Value: 2)
 **Description**:  
@@ -32,11 +40,12 @@ Users can contribute suggested answers to posted questions. This component allow
 
 **High-Level Milestones**:
 - Create UI for submitting answers.
-- Connect answers with corresponding questions.
+- Establish backend connections to link answers to corresponding questions.
+- Create UI for viewing answers under their corresponding questions.
 
 #### 5. Vote on Questions (Point Value: 2)
 **Description**:  
-Questions are voted on for relevance and clarity. High-quality questions receive more votes and gain visibility.
+Users can vote on questions based on relevance, clarity, and quality.
 
 **High-Level Milestones**:
 - Implement voting mechanism.
@@ -44,45 +53,48 @@ Questions are voted on for relevance and clarity. High-quality questions receive
 
 #### 6. Vote for Suggested Answers (Point Value: 2)
 **Description**:  
-Suggested answers are voted on based on their accuracy and usefulness. Top-voted answers receive more prominence.
+Users can vote on answers based on relevance, clarity, and quality.
 
 **High-Level Milestones**:
-- Design the voting interface.
-- Backend for calculating top answers.
+- Implement voting mechanism.
+- Display voting results dynamically.
 
 ---
 
 ### Quality Control Module
 
+This module ensures content quality by prioritizing high-value contributions and minimizing irrelevant or low-quality input. By leveraging crowd feedback and setting automated quality standards, StudySphere maintains a useful and reliable question bank.
+
 #### 1. Display Top 2-3 Answers (Point Value: 1)
 **Description**:  
-After votes are cast, the top 2-3 answers are displayed prominently.
+After votes are cast, the top few answers are displayed prominently.
 
 **High-Level Milestones**:
 - Develop logic for answer ranking.
-- Display ranked answers in UI.
+- Design the UI to prominently display the top answers.
 
 #### 2. Rank Questions by Votes (Point Value: 1)
 **Description**:  
 Questions are ranked based on their votes, with the highest voted questions appearing first for greater visibility.
 
 **High-Level Milestones**:
-- Implement ranking algorithm.
-- UI update for question ranking.
+- Develop logic for question ranking.
+- Design the UI to prominently display the top questions.
 
-#### 3. Remove Questions with Too Many Downvotes (Point Value: 2)
+#### 3. Remove Questions with Too Many Downvotes (Point Value: 3)
 **Description**:  
 Questions with too many downvotes are removed from the system to maintain quality and relevance.
 
 **High-Level Milestones**:
-- Backend logic for downvote thresholds.
-- Notification system for users.
+- Implement backend logic to monitor downvote thresholds and automate removal.
+- Notify users when their questions are removed to encourage constructive feedback.
 
 #### 4. Ban Users Who Post Irrelevant Questions (Point Value: 3)
 **Description**:  
 Users who consistently post irrelevant or low-quality questions are banned to ensure the integrity of the platform.
 
 **High-Level Milestones**:
+- Develop criteria for what counts as a irrelevant or low-quality question
 - Develop criteria for banning users.
 - Implement a review system to avoid false positives.
 
