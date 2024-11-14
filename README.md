@@ -100,8 +100,7 @@ Users who consistently post irrelevant or low-quality questions are banned to en
 
 ---
 
-### Data
-## Sample input/output from QC module
+## Data
 The data from the users will be in JSON format with Question Type, Question, and Answer. The users will be able to select the type of question (which could be Multiple Choice, Short Answer, etc.) they want to add, the question, and a potential answer to it. The data will also contain the user who submitted the question, where unique usernames are used as well as unique QuestionIds to determine the specific question it is. An example of data retrieved from 3 user inputs is as follows: 
 {
   [
@@ -162,5 +161,4 @@ The data for voting on an answer will be as follows, where it will vote on a spe
   ]
 }
 
-## Sample input/output from Aggregation module
 
