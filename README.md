@@ -134,31 +134,31 @@ The data from the users will be in JSON format with Question Type, Question, and
 }
 The username is the username of the user that votes. 
 The data for voting on a question will be as follows, where it will vote on a specific question identified by the QuestionId and Upvote will be True if the user voted positively and False otherwise: 
-{
-  [
-    Username: "User5",
-    QuestionId: 3
-    Upvote: True
-  ], 
-  [
-    Username: "User6",
-    QuestionId: 2
-    Upvote: False
-  ]
-}
+{ <br />
+  [ <br />
+    Username: "User5", <br />
+    QuestionId: 3 <br />
+    Upvote: True <br />
+  ],  <br />
+  [ <br />
+    Username: "User6", <br />
+    QuestionId: 2 <br />
+    Upvote: False <br />
+  ] <br />
+} <br />
 
 The data for voting on an answer will be as follows, where it will vote on a specific question identified by the QuestionId and the Answer will be the answer that the user likes best and votes for:
-{
-  [
-    Username: "User7",
-    QuestionId: 3
-    Answer: "Quick Sort"
-  ], 
-  [
-    Username: "User8",
-    QuestionId: 3
-    Answer: "Merge Sort"
-  ]
-}
+{ <br />
+  [ <br />
+    Username: "User7", <br />
+    QuestionId: 3 <br />
+    Answer: "Quick Sort" <br />
+  ],  <br />
+  [ <br />
+    Username: "User8", <br />
+    QuestionId: 3 <br />
+    Answer: "Merge Sort" <br />
+  ] <br />
+} <br />
 
 
