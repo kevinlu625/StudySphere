@@ -102,6 +102,7 @@ Users who consistently post irrelevant or low-quality questions are banned to en
 
 ## Data
 The data from the users will be in JSON format with Question Type, Question, and Answer. The users will be able to select the type of question (which could be Multiple Choice, Short Answer, etc.) they want to add, the question, and a potential answer to it. The data will also contain the user who submitted the question, where unique usernames are used as well as unique QuestionIds to determine the specific question it is. An example of data retrieved from 3 user inputs is as follows: 
+```json
 {
   [
     Username: "User1", 
@@ -134,18 +135,19 @@ The data from the users will be in JSON format with Question Type, Question, and
 }
 The username is the username of the user that votes. 
 The data for voting on a question will be as follows, where it will vote on a specific question identified by the QuestionId and Upvote will be True if the user voted positively and False otherwise: 
-{ <br />
-  [ <br />
-    Username: "User5", <br />
-    QuestionId: 3 <br />
-    Upvote: True <br />
-  ],  <br />
-  [ <br />
-    Username: "User6", <br />
-    QuestionId: 2 <br />
-    Upvote: False <br />
-  ] <br />
-} <br />
+```json
+{ 
+  [
+    Username: "User5",
+    QuestionId: 3,
+    Upvote: True 
+  ],  
+  [ 
+    Username: "User6", 
+    QuestionId: 2, 
+    Upvote: False 
+  ] 
+} 
 
 The data for voting on an answer will be as follows, where it will vote on a specific question identified by the QuestionId and the Answer will be the answer that the user likes best and votes for:
 ```json
