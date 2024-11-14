@@ -150,15 +150,16 @@ The data for voting on a question will be as follows, where it will vote on a sp
 The data for voting on an answer will be as follows, where it will vote on a specific question identified by the QuestionId and the Answer will be the answer that the user likes best and votes for:
 ```json
 { 
-[ 
-Username: "User7",
-QuestionId: 3, 
-Answer: "Quick Sort" 
-[ 
-Username: "User8",
-QuestionId: 3,
-Answer: "Merge Sort" 
-] 
+  [ 
+    Username: "User7",
+    QuestionId: 3, 
+    Answer: "Quick Sort"
+  ],
+  [ 
+    Username: "User8",
+    QuestionId: 3,
+    Answer: "Merge Sort" 
+  ] 
 } 
 
 
