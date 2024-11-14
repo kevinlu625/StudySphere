@@ -133,6 +133,8 @@ The data from the users will be in JSON format with Question Type, Question, and
     Answer: "Merge Sort"
   ]  
 }
+
+```text
 The username is the username of the user that votes. 
 The data for voting on a question will be as follows, where it will vote on a specific question identified by the QuestionId and Upvote will be True if the user voted positively and False otherwise: 
 ```json
@@ -149,6 +151,7 @@ The data for voting on a question will be as follows, where it will vote on a sp
   ] 
 } 
 
+```text
 The data for voting on an answer will be as follows, where it will vote on a specific question identified by the QuestionId and the Answer will be the answer that the user likes best and votes for:
 ```json
 { 
