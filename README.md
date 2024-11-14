@@ -101,6 +101,7 @@ Users who consistently post irrelevant or low-quality questions are banned to en
 ---
 
 ## Data
+### QC module
 The data from the users will be in JSON format with Question Type, Question, and Answer. The users will be able to select the type of question (which could be Multiple Choice, Short Answer, etc.) they want to add, the question, and a potential answer to it. The data will also contain the user who submitted the question, where unique usernames are used as well as unique QuestionIds to determine the specific question it is. An example of data retrieved from 3 user inputs is as follows: 
 
 ```json
@@ -170,4 +171,6 @@ The data for voting on an answer will be as follows, where it will vote on a spe
   } 
 ] 
 
-
+```
+### Aggregation module
+There is overlap with the QC module where the aggregation model will sum the number of votes for a specific answer or a specific question to determine which is the most popular. Similarly, if a certain question reaches a certain threshold number of downvotes, it will be removed and no longer be displayed on the website. Users with a username that has a certain number of questions removed will be banned, which is by counting the number of questions removed per user. 
