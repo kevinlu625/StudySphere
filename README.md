@@ -99,3 +99,68 @@ Users who consistently post irrelevant or low-quality questions are banned to en
 - Implement a review system to avoid false positives.
 
 ---
+
+### Data
+## Sample input/output from QC module
+The data from the users will be in JSON format with Question Type, Question, and Answer. The users will be able to select the type of question (which could be Multiple Choice, Short Answer, etc.) they want to add, the question, and a potential answer to it. The data will also contain the user who submitted the question, where unique usernames are used as well as unique QuestionIds to determine the specific question it is. An example of data retrieved from 3 user inputs is as follows: 
+{
+  [
+    Username: "User1", 
+    Question Type: "Multiple Choice",
+    Question: "What elements are in the periodic table?", 
+    QuestionId: 1,
+    Answer: "Carbon, Mitochondria, Nucleus"
+  ], 
+  [
+    Username: "User2",
+    Question Type: "Short Answer",
+    Question: "What is the mitochondria?", 
+    QuestionId: 2,
+    Answer: "The powerhouse of the cell."
+  ], 
+  [
+    Username: "User3", 
+    Question Type: "Short Answer",
+    Question: "What algorithm can be used to sort a list?", 
+    QuestionId: 3,
+    Answer: "Quick Sort"
+  ], 
+  [
+    Username: "User4", 
+    Question Type: "Short Answer",
+    Question: "What algorithm can be used to sort a list?", 
+    QuestionId: 3,
+    Answer: "Merge Sort"
+  ]  
+}
+The username is the username of the user that votes. 
+The data for voting on a question will be as follows, where it will vote on a specific question identified by the QuestionId and Upvote will be True if the user voted positively and False otherwise: 
+{
+  [
+    Username: "User5",
+    QuestionId: 3
+    Upvote: True
+  ], 
+  [
+    Username: "User6",
+    QuestionId: 2
+    Upvote: False
+  ]
+}
+
+The data for voting on an answer will be as follows, where it will vote on a specific question identified by the QuestionId and the Answer will be the answer that the user likes best and votes for:
+{
+  [
+    Username: "User7",
+    QuestionId: 3
+    Answer: "Quick Sort"
+  ], 
+  [
+    Username: "User8",
+    QuestionId: 3
+    Answer: "Merge Sort"
+  ]
+}
+
+## Sample input/output from Aggregation module
+
