@@ -7,7 +7,7 @@ StudySphere is divided into two primary modules: Aggregation Module and Quality 
 ---
 
 ### Aggregation Module
-This module facilitates the core functions of question posting, answer suggestions, and voting, allowing users to interact and contribute content within a structured framework.
+This module facilitates the core functions of question posting, answer suggestions, and voting, allowing users to interact and contribute content within a structured framework. An explanation of this module can be found in src/StudySphere_Aggregation_Module.ipynb.
 
 #### 1. Choose Class (Point Value: 1)
 **Description**:  
@@ -56,18 +56,18 @@ Users can vote on questions based on relevance, clarity, and quality.
 Users can vote on answers based on relevance, clarity, and quality.
 
 **High-Level Milestones**:
-- Implement voting mechanism.
+- Implement voting mechanism (simple majority vote).
 - Display voting results dynamically.
 
 ---
 
 ### Quality Control Module
 
-This module ensures content quality by prioritizing high-value contributions and minimizing irrelevant or low-quality input. By leveraging crowd feedback and setting automated quality standards, StudySphere maintains a useful and reliable question bank.
+This module ensures content quality by prioritizing high-value contributions and minimizing irrelevant or low-quality input. It does this through simple majority vote mechanisms.  By leveraging crowd feedback and setting automated quality standards, StudySphere maintains a useful and reliable question bank. An explanation of this module can be found in src/StudySphere_QC_Module.ipynb.
 
 #### 1. Display Top 2-3 Answers (Point Value: 1)
 **Description**:  
-After votes are cast, the top few answers are displayed prominently.
+After votes are cast, the top few answers are displayed prominently with majority vote.
 
 **High-Level Milestones**:
 - Develop logic for answer ranking.
