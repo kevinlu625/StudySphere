@@ -81,7 +81,10 @@ export function AnswerList({
         })
       )
 
-      setAnswers(answersWithScores)
+      // Sort answers by score in descending order
+      setAnswers(
+        answersWithScores.sort((a, b) => b.score - a.score)
+      )
     } catch (error) {
       console.error("Error fetching answers:", error)
     } finally {
@@ -89,7 +92,6 @@ export function AnswerList({
     }
   }
 
-  // Initial fetch when component mounts
   useEffect(() => {
     fetchQuestion()
     fetchAnswers()
@@ -113,15 +115,16 @@ export function AnswerList({
           throw new Error("Failed to add answer")
         }
 
-        const data = await response.json() // Assuming backend returns the new answer with its ID
+        const data = await response.json() 
 
-        // Add the new answer to the answers state
-        setAnswers((prevAnswers) => [
-          { id: data.id, text: newAnswer.trim(), score: 0 }, // Add new answer
-          ...prevAnswers, // Keep existing answers
-        ])
+        // Add the new answer to the answers state and sort the list
+        setAnswers((prevAnswers) =>
+          [{ id: data.id, text: newAnswer.trim(), score: 0 }, ...prevAnswers].sort(
+            (a, b) => b.score - a.score
+          )
+        )
 
-        setNewAnswer("") // Clear the input
+        setNewAnswer("") 
       } catch (error) {
         console.error("Error adding answer:", error)
       }
@@ -143,12 +146,15 @@ export function AnswerList({
         throw new Error("Failed to vote on answer")
       }
 
-      const { new_vote_count } = await response.json() // Backend returns updated vote count
+      const { new_vote_count } = await response.json() 
 
+      // Update the specific answer's score and sort the list
       setAnswers((prevAnswers) =>
-        prevAnswers.map((a) =>
-          a.id === answerId ? { ...a, score: new_vote_count } : a
-        )
+        prevAnswers
+          .map((a) =>
+            a.id === answerId ? { ...a, score: new_vote_count } : a
+          )
+          .sort((a, b) => b.score - a.score)
       )
     } catch (error) {
       console.error("Error voting on answer:", error)

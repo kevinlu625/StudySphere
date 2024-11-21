@@ -46,7 +46,10 @@ export function QuestionList({ className }: { className: string }) {
         })
       )
 
-      setQuestions(questionsWithScores)
+      // Sort questions by score in descending order
+      setQuestions(
+        questionsWithScores.sort((a, b) => b.score - a.score)
+      )
     } catch (error) {
       console.error("Error fetching questions:", error)
     } finally {
@@ -75,17 +78,17 @@ export function QuestionList({ className }: { className: string }) {
           throw new Error("Failed to add question")
         }
 
-        const data = await response.json() // Assuming the backend returns the newly created question with its ID
+        const data = await response.json() 
 
-        // Update the questions state with the new question
-        setQuestions((prevQuestions) => [
-          { id: data.id, text: newQuestion.trim(), score: 0 }, // Add new question
-          ...prevQuestions, // Keep the existing questions
-        ])
-        console.log("Question added successfully")
-        setNewQuestion("") // Clear the input
-        // console.log("Refetched Questions")
-        // fetchQuestions() // Refetch the questions to update scores
+        // Add the new question to the questions state and sort the list
+        setQuestions((prevQuestions) =>
+          [
+            { id: data.id, text: newQuestion.trim(), score: 0 },
+            ...prevQuestions,
+          ].sort((a, b) => b.score - a.score)
+        )
+
+        setNewQuestion("") 
       } catch (error) {
         console.error("Error adding question:", error)
       }
@@ -105,12 +108,15 @@ export function QuestionList({ className }: { className: string }) {
         throw new Error("Failed to vote on question")
       }
 
-      const { new_vote_count } = await response.json() // Backend returns updated vote count
+      const { new_vote_count } = await response.json() 
 
+      // Update the specific question's score and sort the list
       setQuestions((prevQuestions) =>
-        prevQuestions.map((q) =>
-          q.id === questionId ? { ...q, score: new_vote_count } : q
-        )
+        prevQuestions
+          .map((q) =>
+            q.id === questionId ? { ...q, score: new_vote_count } : q
+          )
+          .sort((a, b) => b.score - a.score)
       )
     } catch (error) {
       console.error("Error voting on question:", error)
