@@ -59,7 +59,7 @@ export function QuestionList({ className }: { className: string }) {
     fetchQuestions()
   }, [className])
 
-  // Add a new question and refetch the list
+  // Add a new question and update the questions list immediately
   const addQuestion = async () => {
     if (newQuestion.trim()) {
       try {
@@ -74,9 +74,18 @@ export function QuestionList({ className }: { className: string }) {
         if (!response.ok) {
           throw new Error("Failed to add question")
         }
-        setNewQuestion("")
-        // Refetch the updated questions list
-        fetchQuestions()
+
+        const data = await response.json() // Assuming the backend returns the newly created question with its ID
+
+        // Update the questions state with the new question
+        setQuestions((prevQuestions) => [
+          { id: data.id, text: newQuestion.trim(), score: 0 }, // Add new question
+          ...prevQuestions, // Keep the existing questions
+        ])
+        console.log("Question added successfully")
+        setNewQuestion("") // Clear the input
+        // console.log("Refetched Questions")
+        // fetchQuestions() // Refetch the questions to update scores
       } catch (error) {
         console.error("Error adding question:", error)
       }
@@ -84,10 +93,10 @@ export function QuestionList({ className }: { className: string }) {
   }
 
   // Vote on a question and update its score
-  const vote = async (questionId: number, upvote: boolean) => {
+  const vote = async (questionId: number, upvote: number) => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/function/vote-question?question_id=${questionId}&upvote=${upvote}`,
+        `http://127.0.0.1:8000/function/vote-question/?question_id=${questionId}&upvote=${upvote}`,
         {
           method: "POST",
         }
@@ -96,15 +105,11 @@ export function QuestionList({ className }: { className: string }) {
         throw new Error("Failed to vote on question")
       }
 
-      // Update score after voting
-      const scoreResponse = await fetch(
-        `http://127.0.0.1:8000/function/get-question-score?question_id=${questionId}`
-      )
-      const scoreData = await scoreResponse.json()
+      const { new_vote_count } = await response.json() // Backend returns updated vote count
 
       setQuestions((prevQuestions) =>
         prevQuestions.map((q) =>
-          q.id === questionId ? { ...q, score: scoreData.vote_count} : q
+          q.id === questionId ? { ...q, score: new_vote_count } : q
         )
       )
     } catch (error) {
@@ -153,7 +158,7 @@ export function QuestionList({ className }: { className: string }) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => vote(question.id, true)}
+                      onClick={() => vote(question.id, 1)}
                     >
                       <ThumbsUp className="h-4 w-4" />
                     </Button>
@@ -161,7 +166,7 @@ export function QuestionList({ className }: { className: string }) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => vote(question.id, false)}
+                      onClick={() => vote(question.id, 0)}
                     >
                       <ThumbsDown className="h-4 w-4" />
                     </Button>

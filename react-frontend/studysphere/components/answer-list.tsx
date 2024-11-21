@@ -12,6 +12,12 @@ interface Answer {
   score: number
 }
 
+interface Question {
+  id: number
+  text: string
+  voteCount: number
+}
+
 export function AnswerList({
   className,
   questionId,
@@ -19,10 +25,33 @@ export function AnswerList({
   className: string
   questionId: string
 }) {
-  const [question, setQuestion] = useState("") // Optionally, fetch the question text
+  const [question, setQuestion] = useState<Question | null>(null)
   const [answers, setAnswers] = useState<Answer[]>([])
   const [newAnswer, setNewAnswer] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+
+  // Fetch the question details
+  const fetchQuestion = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/function/get-question/?question_id=${encodeURIComponent(
+          questionId
+        )}`
+      )
+      if (!response.ok) {
+        throw new Error("Failed to fetch question")
+      }
+      const data = await response.json()
+
+      setQuestion({
+        id: data.id,
+        text: data.question,
+        voteCount: data.vote_count,
+      })
+    } catch (error) {
+      console.error("Error fetching question:", error)
+    }
+  }
 
   // Fetch answers and their scores from the backend
   const fetchAnswers = async () => {
@@ -62,10 +91,11 @@ export function AnswerList({
 
   // Initial fetch when component mounts
   useEffect(() => {
+    fetchQuestion()
     fetchAnswers()
   }, [questionId])
 
-  // Add a new answer and refetch the list
+  // Add a new answer and update the answers list immediately
   const addAnswer = async () => {
     if (newAnswer.trim()) {
       try {
@@ -82,9 +112,16 @@ export function AnswerList({
         if (!response.ok) {
           throw new Error("Failed to add answer")
         }
-        setNewAnswer("")
-        // Refetch the updated answers list
-        await fetchAnswers()
+
+        const data = await response.json() // Assuming backend returns the new answer with its ID
+
+        // Add the new answer to the answers state
+        setAnswers((prevAnswers) => [
+          { id: data.id, text: newAnswer.trim(), score: 0 }, // Add new answer
+          ...prevAnswers, // Keep existing answers
+        ])
+
+        setNewAnswer("") // Clear the input
       } catch (error) {
         console.error("Error adding answer:", error)
       }
@@ -106,15 +143,11 @@ export function AnswerList({
         throw new Error("Failed to vote on answer")
       }
 
-      // Update the specific answer's score after voting
-      const scoreResponse = await fetch(
-        `http://127.0.0.1:8000/function/get-answer-score?answer_id=${answerId}`
-      )
-      const scoreData = await scoreResponse.json()
+      const { new_vote_count } = await response.json() // Backend returns updated vote count
 
       setAnswers((prevAnswers) =>
         prevAnswers.map((a) =>
-          a.id === answerId ? { ...a, score: scoreData.vote_count || 0 } : a
+          a.id === answerId ? { ...a, score: new_vote_count } : a
         )
       )
     } catch (error) {
@@ -126,7 +159,11 @@ export function AnswerList({
     <div>
       <Card className="mb-6">
         <CardHeader>
-          <CardTitle>{question || `Question #${questionId}`}</CardTitle>
+          <CardTitle>
+            {question
+              ? `${question.text} (Votes: ${question.voteCount})`
+              : `Question #${questionId}`}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex">
