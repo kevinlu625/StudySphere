@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from supabase import create_client, Client
 import os
 import bcrypt
+import re
 
 function_router = APIRouter(
     prefix="/function",
@@ -190,26 +191,64 @@ async def get_question(question_id: int):
 
 # register route
 @function_router.post("/register/")
-async def register_user(username: str, password: str):
+async def register_user(username: str, password: str, email: str):
     try:
-        if not username or not password:
-            raise HTTPException(status_code=400, detail="Username and password are required.")
+        if not username or not password or not email:
+            raise HTTPException(status_code=400, detail="Username, password, and email are required.")
+
+        # Validate email contains "upenn"
+        if "upenn" not in email.lower():
+            raise HTTPException(status_code=400, detail="Must use penn email.")
+
+        email_regex = r"[^@]+@[^@]+\.[^@]+"
+        if not re.match(email_regex, email):
+            raise HTTPException(status_code=400, detail="Invalid email format.")
 
         # Check if the username already exists
         user_exists = supabase.table("users").select("id").eq("username", username).execute()
         if user_exists.data:
             raise HTTPException(status_code=400, detail="Username already exists.")
 
+        # Check if the email already exists (to avoid duplicates)
+        email_exists = supabase.table("users").select("id").eq("email", email).execute()
+        if email_exists.data:
+            raise HTTPException(status_code=400, detail="Email already registered.")
+
+        # Hash the password
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
+        # Insert the new user into the database
         new_user = supabase.table("users").insert({
             "username": username,
-            "password": hashed_password.decode('utf-8') 
+            "password": hashed_password.decode('utf-8'),
+            "email": email
         }).execute()
 
         return {"message": "User registered successfully.", "user_id": new_user.data[0]["id"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+
+# @function_router.post("/register/")
+# async def register_user(username: str, password: str):
+#     try:
+#         if not username or not password:
+#             raise HTTPException(status_code=400, detail="Username and password are required.")
+
+#         # Check if the username already exists
+#         user_exists = supabase.table("users").select("id").eq("username", username).execute()
+#         if user_exists.data:
+#             raise HTTPException(status_code=400, detail="Username already exists.")
+
+#         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+#         new_user = supabase.table("users").insert({
+#             "username": username,
+#             "password": hashed_password.decode('utf-8') 
+#         }).execute()
+
+#         return {"message": "User registered successfully.", "user_id": new_user.data[0]["id"]}
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
     
 # login route
 @function_router.post("/login/")
