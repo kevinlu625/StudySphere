@@ -2,6 +2,7 @@ import datetime
 from fastapi import APIRouter, HTTPException
 from supabase import create_client, Client
 import os
+import bcrypt
 
 function_router = APIRouter(
     prefix="/function",
@@ -185,3 +186,47 @@ async def get_question(question_id: int):
         raise HTTPException(status_code=404, detail="Question not found.")
 
     return question.data[0]
+
+
+# register route
+@function_router.post("/register/")
+async def register_user(username: str, password: str):
+    try:
+        if not username or not password:
+            raise HTTPException(status_code=400, detail="Username and password are required.")
+
+        # Check if the username already exists
+        user_exists = supabase.table("users").select("id").eq("username", username).execute()
+        if user_exists.data:
+            raise HTTPException(status_code=400, detail="Username already exists.")
+
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+
+        new_user = supabase.table("users").insert({
+            "username": username,
+            "password": hashed_password.decode('utf-8') 
+        }).execute()
+
+        return {"message": "User registered successfully.", "user_id": new_user.data[0]["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+# login route
+@function_router.post("/login/")
+async def login_user(username: str, password: str):
+    try:
+        if not username or not password:
+            raise HTTPException(status_code=400, detail="Username and password are required.")
+
+        user = supabase.table("users").select("*").eq("username", username).execute()
+
+        if not user.data:
+            raise HTTPException(status_code=404, detail="User not found.")
+
+        stored_password = user.data[0]["password"]
+        if not bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
+            raise HTTPException(status_code=401, detail="Invalid password.")
+
+        return {"message": "Login successful.", "user_id": user.data[0]["id"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
