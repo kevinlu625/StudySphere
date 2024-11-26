@@ -1,5 +1,19 @@
 # StudySphere
 
+### How to use StudySphere
+
+As of now StudySphere can be run and deployed locally from a students laptop while all data is saved in a Postgres database (Supabase). Here are the steps to get StudySphere up and running. 
+
+1. Run 'npm install > requirements.txt' from the cli
+2. Go into the backend folder and run 'uvicorn main:app --reload'
+3. Go into the react-frontend folder and then go into the studysphere folder and run 'npm run dev'
+4. StudySphere should now be up and running on your local host.
+5. You can then start creating classes, creating questions, answering questions, downvoting/upvoting questions you dislike/like and doing the same for answers.
+6. If something isn't working feel free to contact kevinlu1@seas.upenn.edu
+
+### How the code runs
+The code is split between backend and frontend. We are using FastAPI/Python for our backend and Next.JS for our frontend. The data you contribute will help us identify which questions and answers are best/most relevant for a specific class. This can then be used for your personal learning as well as potentially which questions would be most relevant for a professor to put on an exam and the most correct answer(s) to that question. 
+
 #### Project Components
 
 StudySphere is divided into two primary modules: Aggregation Module and Quality Control Module. Each module handles specific aspects of the platform's functionality, contributing to the overall collaborative learning experience by ensuring content quality and user engagement.
