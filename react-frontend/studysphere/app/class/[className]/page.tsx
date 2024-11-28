@@ -11,7 +11,7 @@ export default function ClassPage({ params }: { params: { className: string } })
       <NavBar />
       <div className="container mx-auto p-4">
         <div className="flex items-center mb-6">
-          <Link href="/" passHref>
+          <Link href="/home" passHref>
             <Button variant="outline" size="sm" className="mr-4">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Classes
             </Button>
