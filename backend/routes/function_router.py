@@ -265,7 +265,6 @@ async def login_user(username: str, password: str):
         stored_password = user.data[0]["password"]
         if not bcrypt.checkpw(password.encode('utf-8'), stored_password.encode('utf-8')):
             raise HTTPException(status_code=401, detail="Invalid password.")
-
         return {"message": "Login successful.", "user_id": user.data[0]["id"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

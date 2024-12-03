@@ -20,7 +20,11 @@ export function Login() {
                       'Content-Type': 'application/json',
                     },
                 });
+                console.log("IM HERE2");
             }
+            console.log("DATA HERE:");
+            console.log(fetchData);
+            // router.push("/home");
         } catch (error) {
             loginSuccess = false;
             console.error("Error logging in:", error)
