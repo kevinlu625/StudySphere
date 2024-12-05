@@ -5,7 +5,20 @@ meta {
 }
 
 post {
-  url: http://127.0.0.1:52315/function/register/
+  url: http://127.0.0.1:8000/function/register/?username=bill&password=password&email=ehuang817@gmail.com
   body: none
   auth: none
+}
+
+query {
+  username: bill
+  password: password
+  email: ehuang817@gmail.com
+}
+
+body:json {
+  {
+    "username": "elliu",
+    "password": "nets2130"
+  }
 }
