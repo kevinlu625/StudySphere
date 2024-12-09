@@ -16,6 +16,53 @@ interface Question {
   id: number
   text: string
   voteCount: number
+  difficulty: number
+}
+
+interface DifficultyRatingProps {
+  initialRating?: number;
+  onRatingChange?: (rating: number) => void;
+}
+
+function DifficultyRating({ initialRating = 0, onRatingChange }: DifficultyRatingProps) {
+  const [rating, setRating] = useState(initialRating);
+  const [hover, setHover] = useState(0);
+
+  const handleRatingClick = (value: number) => {
+    setRating(value);
+    if (onRatingChange) {
+      onRatingChange(value);
+    }
+  };
+
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+        Question Difficulty
+      </label>
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((value) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => handleRatingClick(value)}
+            onMouseEnter={() => setHover(value)}
+            onMouseLeave={() => setHover(0)}
+            className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors
+              ${value <= (hover || rating)
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'
+              } hover:bg-blue-600`}
+          >
+            {value}
+          </button>
+        ))}
+      </div>
+      <span className="text-sm text-gray-500 dark:text-gray-400">
+        {rating === 0 ? 'Not rated' : `Difficulty: ${rating}/5`}
+      </span>
+    </div>
+  );
 }
 
 export function AnswerList({
@@ -33,25 +80,36 @@ export function AnswerList({
   // Fetch the question details
   const fetchQuestion = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/function/get-question/?question_id=${encodeURIComponent(
-          questionId
-        )}`
-      )
-      if (!response.ok) {
-        throw new Error("Failed to fetch question")
+      const [questionResponse, difficultyResponse] = await Promise.all([
+        fetch(
+          `http://127.0.0.1:8000/function/get-question/?question_id=${encodeURIComponent(
+            questionId
+          )}`
+        ),
+        fetch(
+          `http://127.0.0.1:8000/function/get-question-difficulty/?question_id=${encodeURIComponent(
+            questionId
+          )}`
+        )
+      ]);
+
+      if (!questionResponse.ok || !difficultyResponse.ok) {
+        throw new Error("Failed to fetch question data");
       }
-      const data = await response.json()
+
+      const questionData = await questionResponse.json();
+      const difficultyData = await difficultyResponse.json();
 
       setQuestion({
-        id: data.id,
-        text: data.question,
-        voteCount: data.vote_count,
-      })
+        id: questionData.id,
+        text: questionData.question,
+        voteCount: questionData.vote_count,
+        difficulty: difficultyData.difficulty || 0
+      });
     } catch (error) {
-      console.error("Error fetching question:", error)
+      console.error("Error fetching question:", error);
     }
-  }
+  };
 
   // Fetch answers and their scores from the backend
   const fetchAnswers = async () => {
@@ -161,14 +219,53 @@ export function AnswerList({
     }
   }
 
+  const handleDifficultyChange = async (newRating: number) => {
+    try {
+        const response = await fetch(
+            `http://127.0.0.1:8000/function/rate-question-difficulty/?question_id=${encodeURIComponent(
+                questionId
+            )}&difficulty_rating=${newRating}`,
+            {
+                method: 'POST',
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error('Failed to update difficulty rating');
+        }
+
+        const data = await response.json();
+        console.log('Updated difficulty:', data.new_difficulty);
+        
+        // Update the question's difficulty in the UI if needed
+        if (question) {
+            setQuestion({
+                ...question,
+                difficulty: data.new_difficulty
+            });
+        }
+    } catch (error) {
+        console.error('Error updating difficulty rating:', error);
+    }
+};
+
   return (
     <div>
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>
-            {question
-              ? `${question.text} (Votes: ${question.voteCount})`
-              : `Question #${questionId}`}
+            {question ? (
+              <div className="flex flex-col gap-2">
+                <div>{question.text} (Votes: {question.voteCount})</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                  {question.difficulty > 0 
+                    ? `Difficulty Rating: ${question.difficulty}`
+                    : 'No difficulty rating yet'}
+                </div>
+              </div>
+            ) : (
+              `Question #${questionId}`
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -190,6 +287,7 @@ export function AnswerList({
         <p>Loading answers...</p>
       ) : (
         <div className="space-y-4">
+          <DifficultyRating onRatingChange={handleDifficultyChange} />
           {answers.map((answer) => (
             <Card key={answer.id}>
               <CardContent className="p-4">

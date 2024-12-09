@@ -95,9 +95,6 @@ async def vote_answer(answer_id: int, upvote: int):
 @function_router.post("/vote-question/")
 async def vote_question(question_id: int, upvote: int):
     try:
-        if question_id is None or upvote is None:
-            raise HTTPException(status_code=400, detail="Question ID and vote type (upvote) are required.")
-
         response = supabase.table("questions").select("vote_count").eq("id", question_id).execute()
 
         if not response.data:
@@ -116,7 +113,25 @@ async def vote_question(question_id: int, upvote: int):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
+@function_router.post("/rate-question-difficulty/")
+async def rate_question_difficulty(question_id: int, difficulty_rating: int):
+    try:
+        response = supabase.table("questions").select("difficulty").eq("id", question_id).execute()
 
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Question not found.")
+
+        current_difficulty = response.data[0]['difficulty']
+
+        new_difficulty = current_difficulty + difficulty_rating
+
+        supabase.table("questions").update({"difficulty": new_difficulty}).eq("id", question_id).execute()
+
+        return {"message": "Vote successfully recorded.", "new_difficulty": new_difficulty}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 #get routes
 @function_router.get("/get-classes/")
@@ -166,10 +181,16 @@ async def get_answer_score(answer_id: int):
 
 @function_router.get("/get-question-score/")
 async def get_question_score(question_id: int):
-    if question_id is None:
-        raise HTTPException(status_code=400, detail="Question ID is required.")
-
     question = supabase.table("questions").select("vote_count").eq("id", question_id).execute()
+
+    if not question.data:
+        raise HTTPException(status_code=404, detail="Question not found.")
+
+    return question.data[0]
+
+@function_router.get("/get-question-difficulty/")
+async def get_question_difficulty(question_id: int):
+    question = supabase.table("questions").select("difficulty").eq("id", question_id).execute()
 
     if not question.data:
         raise HTTPException(status_code=404, detail="Question not found.")
@@ -178,9 +199,6 @@ async def get_question_score(question_id: int):
 
 @function_router.get("/get-question/")
 async def get_question(question_id: int):
-    if question_id is None:
-        raise HTTPException(status_code=400, detail="Question ID is required.")
-
     question = supabase.table("questions").select("*").eq("id", question_id).execute()
 
     if not question.data:
@@ -188,6 +206,30 @@ async def get_question(question_id: int):
 
     return question.data[0]
 
+@function_router.get("/get-questions-by-difficulty/")
+async def get_questions_by_difficulty(class_name: str):
+    try:
+        # Validate input
+        if not class_name:
+            raise HTTPException(status_code=400, detail="Class name is required.")
+
+        # Check if the class exists
+        class_exists = supabase.table("classes").select("id").eq("class_name", class_name).execute()
+        
+        if not class_exists.data:
+            raise HTTPException(status_code=404, detail="Class not found.")
+
+        # Fetch questions for the given class, ordered by difficulty
+        questions = supabase.table("questions")\
+            .select("*")\
+            .eq("class", class_name)\
+            .order("difficulty", desc=True)\
+            .execute()
+
+        return questions.data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 # register route
 @function_router.post("/register/")
@@ -268,3 +310,4 @@ async def login_user(username: str, password: str):
         return {"message": "Login successful.", "user_id": user.data[0]["id"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+    
